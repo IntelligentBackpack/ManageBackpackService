@@ -47,7 +47,6 @@ class RaspDeviceConsumer {
 
 const express = require('express')
 const app = express()
-const port = 3000
 
 app.get('/', (req, res) => {
   res.send('Sending message...')
@@ -60,6 +59,7 @@ app.get('/register', (req, res) => {
   console.log(req.query.email)
 })
 
+const port = process.env.PORT || 80;
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+	console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+});
