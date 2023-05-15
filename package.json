@@ -2,7 +2,7 @@
   "name": "ManageBackpackService",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "./build/index.js",
   "scripts": {
     "start": "node ./build/index.js",
     "build": "npx tsc"

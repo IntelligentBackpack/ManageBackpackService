@@ -51,7 +51,7 @@ const port = 3000
 
 app.get('/', (req, res) => {
   res.send('Sending message...')
-  new RaspDeviceConsumer().sendMessage();
+  //new RaspDeviceConsumer().sendMessage();
 })
 
 app.get('/register', (req, res) => {
