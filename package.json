@@ -1,10 +1,9 @@
 {
-  "name": "send_to_iothub",
+  "name": "ManageBackpackService",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/index.js",
     "build": "npx tsc"
   },
