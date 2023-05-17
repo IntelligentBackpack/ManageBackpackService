@@ -1,5 +1,4 @@
 import * as deviceModule from './models/RaspDeviceModule'
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -16,7 +15,7 @@ app.get('/', (req, res) => {
         description: 'Return the root page of the web service' 
       }
   */
-  res.send('Backpack service');
+  res.send("Backpack service");
 })
 
 app.post('/register/:hash', async (req, res) => {
@@ -60,6 +59,7 @@ app.post('/register/:hash', async (req, res) => {
     }
     var dataToSend: string = "EMAIL:"+email;
     hubIot.sendMessage(value, dataToSend);
+    hubIot.createEntryForFirebase(email, hash);
   } catch (e: any) {
     console.error(e);
     res.status(500).send('A problem occurred while registration: ' + e.message);

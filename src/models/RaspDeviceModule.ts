@@ -1,26 +1,34 @@
 import { Client } from "azure-iothub";
 import { Message } from "azure-iot-common";
 import sql, { config } from 'mssql';
+import axios from 'axios';
+var fs = require('fs');
 
 export class RaspDeviceConsumer {
 
+    
+
     conf: config = {
-        user: 'intelligentSystem',
-        password: 'LSS#2022',
-        server: 'intelligent-system.database.windows.net',
-        port: 1433,
-        database: 'IntelligentBackpack',
-        options: {
-            encrypt: true
-        }
+        
     }
 
-    private connectionStringPolicy = 'HostName=IntelligentBackpackHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=kkEXnnmh9gfASfrgeav6MG3O8Wi85j+vngraAQvz904=';
+    private connectionStringPolicy = "";//'HostName=IntelligentBackpackHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=kkEXnnmh9gfASfrgeav6MG3O8Wi85j+vngraAQvz904=';
     
     sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     constructor() {
-        
+        var mydata = JSON.parse(fs.readFileSync("./build/properties.json"));
+        this.conf = {
+            user: mydata["user"],
+            password: mydata["pass"],
+            server: 'intelligent-system.database.windows.net',
+            port: 1433,
+            database: 'IntelligentBackpack',
+            options: {
+                encrypt: true
+            }
+        };
+        this.connectionStringPolicy = mydata["hub"];
     }
 
     async addDeviceConnectionString(hash: string, connectionString: string): Promise<string> {
@@ -64,6 +72,7 @@ export class RaspDeviceConsumer {
     async getDeviceConnectionString(hash: string): Promise<string> {      
       try {
           var poolConnection = await sql.connect(this.conf);
+          //TODO and not registered yet
           var resultSet:sql.IResult<any> = await poolConnection.request()
                                           .query("select ConnectionString from RegisteredDevices where hashedConnection='" + hash + "'");
           poolConnection.close();
@@ -106,7 +115,16 @@ export class RaspDeviceConsumer {
         });
     }
 
-    createEntryForFirebase() {
-        //mettere un active in ogni zaino uguale a true su firebase e creare l'entry
+    async createEntryForFirebase(email: string, deviceId: string) {
+        var url = "https://intelligentbackpack-d463a-default-rtdb.europe-west1.firebasedatabase.app"
+        email = email.replace(".", "-")
+        await axios.put(url + '/' + email + '/' + deviceId + '.json', {
+            "active": true
+        })
+        .then((response) => {
+            console.log(response);            
+        }, (error) => {
+            console.log(error);
+        });
     }
 }
