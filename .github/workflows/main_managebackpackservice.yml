@@ -30,6 +30,8 @@ jobs:
       - name: npm install, build, and test
         env:
           USER_DB: ${{ secrets.USER_DB}}
+          PASSWORD_DB: ${{ secrets.PASSWORD_DB}}
+          HUB_IOT_CONN: ${{ secrets.HUB_IOT_CONN}}
         run: |
           npm install
           npm run build --if-present
