@@ -4,10 +4,10 @@ const outputFile = './swagger-output.json';
 const endpointsFiles = ['./src/index.ts'];
 const doc = {
   info: {
-    title: 'My API',
-    description: 'Description',
+    title: 'Manage Backpack Service',
+    description: 'This service permits users to register their own unregistered Intelligent Backpacks with their email.',
   },
-  host: 'localhost:3000',
+  host: 'http://managebackpackservice.azurewebsites.net/',
   schemes: ['http'],
 };
 
