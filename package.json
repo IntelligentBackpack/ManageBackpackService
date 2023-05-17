@@ -7,11 +7,13 @@
     "build-doc": "node ./swagger.js && npx redoc-cli bundle -o ./build/documentation/index.html swagger-output.json",
     "start": "node ./build/index.js",
     "build": "npx tsc",
-    "prestart": "npm run build"
+    "prestart": "npm run build",
+    "create-secrets": "node ./create_secrets.js >> ./build/properties.json"
   },
   "author": "Daniele Di Lillo",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "azure-iot-common": "^1.13.2",
     "azure-iothub": "^1.16.2",
     "body-parser": "^1.20.2",
