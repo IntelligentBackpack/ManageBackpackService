@@ -6,8 +6,6 @@ var fs = require('fs');
 
 export class RaspDeviceConsumer {
 
-    
-
     conf: config = {
         
     }
@@ -17,18 +15,22 @@ export class RaspDeviceConsumer {
     sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     constructor() {
-        var mydata = JSON.parse(fs.readFileSync("./build/properties.json"));
-        this.conf = {
-            user: mydata["user"],
-            password: mydata["pass"],
-            server: 'intelligent-system.database.windows.net',
-            port: 1433,
-            database: 'IntelligentBackpack',
-            options: {
-                encrypt: true
-            }
-        };
-        this.connectionStringPolicy = mydata["hub"];
+        try {
+            var mydata = JSON.parse(fs.readFileSync("./build/properties.json"));
+            this.conf = {
+                user: mydata["user"],
+                password: mydata["pass"],
+                server: 'intelligent-system.database.windows.net',
+                port: 1433,
+                database: 'IntelligentBackpack',
+                options: {
+                    encrypt: true
+                }
+            };
+            this.connectionStringPolicy = mydata["hub"];
+        } catch (e: any) {
+            throw e;
+        }
     }
 
     async addDeviceConnectionString(hash: string, connectionString: string): Promise<string> {

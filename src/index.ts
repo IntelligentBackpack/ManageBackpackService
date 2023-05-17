@@ -2,7 +2,6 @@ import * as deviceModule from './models/RaspDeviceModule'
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const hubIot = new deviceModule.RaspDeviceConsumer();
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -49,6 +48,7 @@ app.post('/register/:hash', async (req, res) => {
       }
   */
   try {
+    const hubIot = new deviceModule.RaspDeviceConsumer();
     var hash = req.params.hash;
     let data = req.body;
     var email = data["email"];
