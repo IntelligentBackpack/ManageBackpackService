@@ -28,10 +28,13 @@ jobs:
           node-version: '16.x'
 
       - name: npm install, build, and test
+        env:
+          USER_DB: ${{ secrets.USER_DB}}
         run: |
           npm install
           npm run build --if-present
           npm run test --if-present
+          npm run create-secrets
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
