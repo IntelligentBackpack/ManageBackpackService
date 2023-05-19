@@ -1,5 +1,5 @@
-import { Repository } from './domainModel/repository/RepositoryInterface'
-import { RegisteredDeviceImpl } from './domainModel/valueObjects/RegisteredDevice';
+import { Repository } from '../domainModel/repository/RepositoryInterface'
+import { RegisteredDeviceImpl } from '../domainModel/valueObjects/RegisteredDevice';
 import sql, { config } from 'mssql';
 import axios from 'axios';
 
@@ -22,14 +22,18 @@ export class RepositoryImpl implements Repository {
         this.conf.user = user;
         this.conf.password = password;
         this.firebaseUrl = firebaseUrl;
+        console.log(this.conf);
     }
 
     async getDeviceConnectionString(hash: string): Promise<RegisteredDeviceImpl> {
-        var records = await this.executeQuery("select ConnectionString from RegisteredDevices \
-        where hashedConnection='" + hash + "' AND email != ''")
-        if(records == null)
+        console.log("CERCOOOOOOO");
+        var records = await this.executeQuery("select * from RegisteredDevices \
+        where hashedConnection='" + hash + "' AND email = ''");
+        console.log(records);
+        if(records == null || records == undefined || records.length  == 0)
             return null;
         else {
+            console.log("CONTROLLO");
             var deviceId = records.recordset[0].ConnectionString;
             var hashedConnection = records.recordset[0].hashedConnection;
             var email = records.recordset[0].email;
@@ -37,14 +41,14 @@ export class RepositoryImpl implements Repository {
         }
     }
 
-    async registerDevice(hash: string, email: string): Promise<string> {
+    async registerDevice(hash: string, email: string, deviceId: string): Promise<string> {
         var records = await this.executeQuery("update RegisteredDevices set email='" + email + "' \
-                        where hashedConnection='" + hash + "' AND email != ''")
+                        where hashedConnection='" + hash + "'")
         if(records == null)
             return null;
         else {
-            var deviceId = records.recordset[0].ConnectionString;
             this.createEntryForFirebase(email, deviceId);
+            
             return deviceId;
         }
     }
@@ -66,10 +70,9 @@ export class RepositoryImpl implements Repository {
         var resultSet:sql.IResult<any> = await poolConnection.request()
                                         .query(query);
         poolConnection.close();
-        
-        if(resultSet.rowsAffected[0] == 0)
-            return null;
-        return resultSet.rowsAffected;
+        console.log("RESULT QUERY");
+        console.log(resultSet);
+        return resultSet.recordset;
     }
 
     private async createEntryForFirebase(email: string, deviceId: string) {
