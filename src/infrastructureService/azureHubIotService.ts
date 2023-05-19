@@ -11,7 +11,6 @@ export class AzureHubUtilities implements DevicePortInterface {
     }
 
     sendMessageConsumer(deviceId: string, data: string, callback: () => void) {
-        var result: boolean = false;
         var serviceClient = Client.fromConnectionString(this.connectionStringPolicy);
         serviceClient.open((err) => {
             if (err) {
@@ -23,11 +22,10 @@ export class AzureHubUtilities implements DevicePortInterface {
                     if(!receiver) {
                         return
                     }
-                    console.log(err)
                     receiver.on('message', (msg) => {
                       console.log('Feedback message:')
                       console.log(msg.getData().toString('utf-8'));
-                      this.callback();
+                      callback();
                     });
                   });
                 var message = new Message(data);
