@@ -15,27 +15,27 @@ export class SendService {
 
     public async register(hash: string, email: string, success: ()=>void, error: ()=>void) {
         
-        //effettuare il timeout e relativo await finale, o clean in caso di successo
-        //associare la callback di invio messaggio e di successo
-        //success => res.send(200)
-        //error => res.send(500)
-        
         var device = await this.repository.getDeviceConnectionString(hash);
-        if(device != null) {
+
+        if(device != null && EmailPolicyImpl.checkEmail(email)) {
+            const myTimeout = setTimeout(() => {
+                error();
+            }, 5000);
             // il dispositivo esiste e non è registrato
             var callback = async () => {
-                if(EmailPolicyImpl.checkEmail(email)) {
-                    var result = await this.repository.registerDevice(hash, email);
+                clearTimeout(myTimeout);
+                    var result = await this.repository.registerDevice(hash, email, device.getDeviceId());
                     if(result != null) {
                         success();
                     }
                     else {
                         error();
                     }
-                } else {
-                    error();
-                }
             }
+            this.sendConsumer.sendMessageConsumer(device.getDeviceId(), this.getRegistrationMessage(email), callback);
+            return true;
+        } else {
+            return false;
         }
     }
 
