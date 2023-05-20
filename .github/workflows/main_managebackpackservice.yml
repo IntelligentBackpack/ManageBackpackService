@@ -32,6 +32,7 @@ jobs:
           USER_DB: ${{ secrets.USER_DB}}
           PASSWORD_DB: ${{ secrets.PASSWORD_DB}}
           HUB_IOT_CONN: ${{ secrets.HUB_IOT_CONN}}
+          AZURE_POLICY_KEY: ${{ secrets.AZURE_POLICY_KEY}}
         run: |
           npm install
           mkdir ./build
