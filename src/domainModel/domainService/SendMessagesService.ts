@@ -13,30 +13,70 @@ export class SendService {
         this.repository = repository;
     }
 
-    public async register(hash: string, email: string, success: ()=>void, error: ()=>void) {
-        
-        var device = await this.repository.getDeviceConnectionString(hash);
 
+
+    private async updateSystem(hash: string, email: string, success: ()=>void, error: ()=>void, register: boolean) {
+        
+        var device;
+        if(register) {
+            device = await this.repository.getDeviceConnectionStringNotRegistered(hash);
+        } else {
+            device = await this.repository.getDeviceConnectionString(hash);
+        }
+        
         if(device != null && EmailPolicyImpl.checkEmail(email)) {
-            const myTimeout = setTimeout(() => {
+            var isTimeoutOver = false;
+            var myTimeout = setTimeout(() => {
+                isTimeoutOver = true;
                 error();
-            }, 5000);
+            }, 50000);
             // il dispositivo esiste e non è registrato
             var callback = async () => {
+                if(isTimeoutOver) {
+                    console.log("RETURN")
+                    return;
+                }
                 clearTimeout(myTimeout);
-                    var result = await this.repository.registerDevice(hash, email, device.getDeviceId());
-                    if(result != null) {
-                        success();
-                    }
-                    else {
-                        error();
-                    }
+                myTimeout = null;
+                var result: boolean;
+                if(register) {
+                    console.log("REGISTRO")
+                    result = await this.repository.registerDevice(hash, email);
+                } else {
+                    console.log("UNREGISTRO")
+                    result = await this.repository.unRegisterDevice(hash, email);
+                }
+                
+                if(result) {
+                    success();
+                }
+                else {
+                    error();
+                }
             }
-            this.sendConsumer.sendMessageConsumer(device.getDeviceId(), this.getRegistrationMessage(email), callback);
+            var msg = "";
+            if(register) {
+                msg = this.getRegistrationMessage(email);
+            } else {
+                msg = this.getUnRegistrationMessage(email);
+            }
+            this.sendConsumer.sendMessageConsumer(device.getDeviceId(), msg, callback);
             return true;
         } else {
             return false;
         }
+    }
+
+    public async register(hash: string, email: string, success: ()=>void, error: ()=>void) {
+        return await this.updateSystem(hash, email, success, error, true);;
+    }
+
+    public async unRegister(hash: string, email: string, success: ()=>void, error: ()=>void) {
+        return await this.updateSystem(hash, email, success, error, false);
+    }
+
+    public async addDevice(deviceId: string) {
+        this.repository.addDevice(deviceId);
     }
 
     public sendUpdateNotification() {
@@ -45,6 +85,10 @@ export class SendService {
 
     private getRegistrationMessage(email: string) {
         return "EMAIL:" + email;
+    }
+
+    private getUnRegistrationMessage(email: string) {
+        return "UNREGISTER";
     }
 
     private getUpdateMessage() {
