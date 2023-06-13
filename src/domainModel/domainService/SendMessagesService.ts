@@ -29,7 +29,7 @@ export class SendService {
             var myTimeout = setTimeout(() => {
                 isTimeoutOver = true;
                 error();
-            }, 50000);
+            }, 180000);
             // il dispositivo esiste e non è registrato
             var callback = async () => {
                 if(isTimeoutOver) {
@@ -56,9 +56,9 @@ export class SendService {
             }
             var msg = "";
             if(register) {
-                msg = this.getRegistrationMessage(email);
+                msg = this.getRegistrationMessage(email, hash);
             } else {
-                msg = this.getUnRegistrationMessage(email);
+                msg = this.getUnRegistrationMessage();
             }
             this.sendConsumer.sendMessageConsumer(device.getDeviceId(), msg, callback);
             return true;
@@ -83,11 +83,11 @@ export class SendService {
         
     }
 
-    private getRegistrationMessage(email: string) {
-        return "EMAIL:" + email;
+    private getRegistrationMessage(email: string, hash: string) {
+        return "REGISTER;" + email + ";" + hash;
     }
 
-    private getUnRegistrationMessage(email: string) {
+    private getUnRegistrationMessage() {
         return "UNREGISTER";
     }
 

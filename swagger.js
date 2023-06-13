@@ -1,7 +1,7 @@
 const swaggerAutogen = require('swagger-autogen')();
 
 const outputFile = './swagger-output.json';
-const endpointsFiles = ['./src/index.ts'];
+const endpointsFiles = ['./src/routes/ServiceRoutes.ts'];
 const doc = {
   info: {
     title: 'Manage Backpack Service',

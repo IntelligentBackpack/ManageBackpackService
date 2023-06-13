@@ -25,15 +25,16 @@ export class AzureHubUtilities implements DevicePortInterface {
                     receiver.on('message', (msg) => {
                         console.log('Feedback message:')
                         console.log(msg.getData().toString('utf-8'));
-                        callback();
                     });
                 });
                 var message = new Message(data);
                 message.ack = 'full';
                 message.messageId = "My Message ID";
                 console.log('Sending message: ' + message.getData());
-
+                
                 serviceClient.send(deviceId, message);
+
+                callback();
             }
         });
     }
