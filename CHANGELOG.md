@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/IntelligentBackpack/ManageBackpackService/compare/1.0.0...1.0.1) (2023-06-13)
+
+
+### Bug Fixes
+
+* fixed callback activation into Hub Iot module ([ecb2e51](https://github.com/IntelligentBackpack/ManageBackpackService/commit/ecb2e51f62885af37a9f3ed46164bcddfbe0b5ab))
+
 ## 1.0.0 (2023-05-20)
 
 
