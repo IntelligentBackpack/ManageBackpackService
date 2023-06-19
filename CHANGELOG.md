@@ -1,3 +1,15 @@
+## [1.1.0](https://github.com/IntelligentBackpack/ManageBackpackService/compare/1.0.1...1.1.0) (2023-06-18)
+
+
+### Features
+
+* added new route to get device twin ([ce6ca06](https://github.com/IntelligentBackpack/ManageBackpackService/commit/ce6ca060eb7a52d5b09234cffbc9c11f09b9c7a0))
+
+
+### Documentation
+
+* updated documentation ([acac7a5](https://github.com/IntelligentBackpack/ManageBackpackService/commit/acac7a568603fb32fee2260c0cad11fcd000f4d9))
+
 ## [1.0.1](https://github.com/IntelligentBackpack/ManageBackpackService/compare/1.0.0...1.0.1) (2023-06-13)
 
 
