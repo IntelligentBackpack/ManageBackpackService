@@ -2,7 +2,7 @@ import { Client } from "azure-iothub";
 import { Message } from "azure-iot-common";
 import sql, { config } from 'mssql';
 import axios from 'axios';
-var fs = require('fs');
+import fs = require('fs');
 
 export class RaspDeviceConsumer {
 
@@ -15,28 +15,24 @@ export class RaspDeviceConsumer {
     sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     constructor() {
-        try {
-            var mydata = JSON.parse(fs.readFileSync("./build/properties.json"));
-            this.conf = {
-                user: mydata["user"],
-                password: mydata["pass"],
-                server: 'intelligent-system.database.windows.net',
-                port: 1433,
-                database: 'IntelligentBackpack',
-                options: {
-                    encrypt: true
-                }
-            };
-            this.connectionStringPolicy = mydata["hub"];
-        } catch (e: any) {
-            throw e;
-        }
+        const mydata = JSON.parse(fs.readFileSync("./build/properties.json").toString());
+        this.conf = {
+            user: mydata["user"],
+            password: mydata["pass"],
+            server: 'intelligent-system.database.windows.net',
+            port: 1433,
+            database: 'IntelligentBackpack',
+            options: {
+                encrypt: true
+            }
+        };
+        this.connectionStringPolicy = mydata["hub"];
     }
 
     async addDeviceConnectionString(hash: string, connectionString: string): Promise<string> {
       try {
-          var poolConnection = await sql.connect(this.conf);
-          var resultSet:sql.IResult<any> = await poolConnection.request()
+          const poolConnection = await sql.connect(this.conf);
+          const resultSet:sql.IResult<any> = await poolConnection.request()
                                           .query("insert into RegisteredDevices (hashedConnection, ConnectionString, email) values ('" + hash + "', '" + connectionString + "', 'dani@gmoil.cim')");
           poolConnection.close();
           
@@ -54,8 +50,8 @@ export class RaspDeviceConsumer {
 
     async updateDeviceConnectionString(): Promise<string> {
       try {
-          var poolConnection = await sql.connect(this.conf);
-          var resultSet:sql.IResult<any> = await poolConnection.request()
+          const poolConnection = await sql.connect(this.conf);
+          const resultSet:sql.IResult<any> = await poolConnection.request()
           .query("update RegisteredDevices set ConnectionString='raspTest' where hashedConnection='add1ae943c02aaa781535b0003e60bc1bd873cc64a79a782bde20266bfbfd74c'");
           poolConnection.close();
           
@@ -72,27 +68,21 @@ export class RaspDeviceConsumer {
     }
 
     async getDeviceConnectionString(hash: string): Promise<string> {      
-      try {
-          var poolConnection = await sql.connect(this.conf);
-          //TODO and not registered yet
-          var resultSet:sql.IResult<any> = await poolConnection.request()
-                                          .query("select ConnectionString from RegisteredDevices where hashedConnection='" + hash + "'");
-          poolConnection.close();
-          
-          if(resultSet.rowsAffected[0] == 0)
-              return null;
-          console.log(resultSet);
-
-      } catch (e: any) {
-          console.error(e);
-          throw e;
-      }
+        const poolConnection = await sql.connect(this.conf);
+        //TODO and not registered yet
+        const resultSet:sql.IResult<any> = await poolConnection.request()
+                                        .query("select ConnectionString from RegisteredDevices where hashedConnection='" + hash + "'");
+        poolConnection.close();
+        
+        if(resultSet.rowsAffected[0] == 0)
+            return null;
+        console.log(resultSet);
 
       return resultSet.recordset[0].ConnectionString;
     }
 
     sendMessage(deviceId: string, data: string): void {
-      var serviceClient = Client.fromConnectionString(this.connectionStringPolicy);
+      const serviceClient = Client.fromConnectionString(this.connectionStringPolicy);
       serviceClient.open(async (err) => {
           if (err) {
             console.error('Could not connect: ' + err.message);
@@ -107,7 +97,7 @@ export class RaspDeviceConsumer {
                     console.log(msg.getData().toString('utf-8'));
                   });
                 });
-              var message = new Message(data);
+              const message = new Message(data);
               message.ack = 'full';
               message.messageId = "My Message ID";
               console.log('Sending message: ' + message.getData());
@@ -118,7 +108,7 @@ export class RaspDeviceConsumer {
     }
 
     async createEntryForFirebase(email: string, deviceId: string) {
-        var url = "https://intelligentbackpack-d463a-default-rtdb.europe-west1.firebasedatabase.app"
+        const url = "https://intelligentbackpack-d463a-default-rtdb.europe-west1.firebasedatabase.app"
         email = email.replace(".", "-")
         await axios.put(url + '/' + email + '/' + deviceId + '.json', {
             "active": true

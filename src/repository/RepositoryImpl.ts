@@ -2,7 +2,8 @@ import { Repository } from '../domainModel/repository/RepositoryInterface'
 import { RegisteredDeviceImpl } from '../domainModel/valueObjects/RegisteredDevice';
 import sql, { config } from 'mssql';
 import axios from 'axios';
-const { createHash } = require('crypto');
+
+import { createHash } from 'crypto';
 
 export class RepositoryImpl implements Repository {
 
@@ -27,15 +28,15 @@ export class RepositoryImpl implements Repository {
     }
 
     async getDeviceConnectionStringNotRegistered(hash: string): Promise<RegisteredDeviceImpl> {
-        var records = await this.executeQuery("select * from RegisteredDevices \
+        const records = await this.executeQuery("select * from RegisteredDevices \
         where hashedConnection='" + hash + "' AND email = ''");
         if(records.rowsAffected[0] > 0) {
             if(records.recordset == null || records.recordset == undefined || records.recordset.length  == 0)
                 return null;
             else {
-                var deviceId = records.recordset[0].ConnectionString;
-                var hashedConnection = records.recordset[0].hashedConnection;
-                var email = records.recordset[0].email;
+                const deviceId = records.recordset[0].ConnectionString;
+                const hashedConnection = records.recordset[0].hashedConnection;
+                const email = records.recordset[0].email;
                 return new RegisteredDeviceImpl(hashedConnection, deviceId, email);
             }
         } else {
@@ -44,15 +45,15 @@ export class RepositoryImpl implements Repository {
     }
 
     async getDeviceConnectionString(hash: string): Promise<RegisteredDeviceImpl> {
-        var records = await this.executeQuery("select * from RegisteredDevices \
+        const records = await this.executeQuery("select * from RegisteredDevices \
         where hashedConnection='" + hash + "' AND email != ''");
         if(records.rowsAffected[0] > 0) {
             if(records.recordset == null || records.recordset == undefined || records.recordset.length  == 0)
                 return null;
             else {
-                var deviceId = records.recordset[0].ConnectionString;
-                var hashedConnection = records.recordset[0].hashedConnection;
-                var email = records.recordset[0].email;
+                const deviceId = records.recordset[0].ConnectionString;
+                const hashedConnection = records.recordset[0].hashedConnection;
+                const email = records.recordset[0].email;
                 return new RegisteredDeviceImpl(hashedConnection, deviceId, email);
             }
         } else {
@@ -61,7 +62,7 @@ export class RepositoryImpl implements Repository {
     }
 
     async registerDevice(hash: string, email: string): Promise<boolean> {
-        var records = await this.executeQuery("update RegisteredDevices set email='" + email + "' \
+        const records = await this.executeQuery("update RegisteredDevices set email='" + email + "' \
                         where hashedConnection='" + hash + "'")
         if(records == null)
             return false;
@@ -73,8 +74,8 @@ export class RepositoryImpl implements Repository {
     }
 
     async addDevice(deviceId: string): Promise<RegisteredDeviceImpl> {
-        var hash: string = createHash('sha256').update(deviceId).digest('hex');
-        var records = await this.executeQuery("insert into RegisteredDevices \
+        const hash: string = createHash('sha256').update(deviceId).digest('hex');
+        const records = await this.executeQuery("insert into RegisteredDevices \
             (hashedConnection, ConnectionString, email) values \
             ('" + hash + "', '" + deviceId + "', '')")
         
@@ -86,7 +87,7 @@ export class RepositoryImpl implements Repository {
     }
 
     async unRegisterDevice(hash: string, email: string): Promise<boolean> {
-        var records = await this.executeQuery("update RegisteredDevices set email='' \
+        const records = await this.executeQuery("update RegisteredDevices set email='' \
                         where hashedConnection='" + hash + "'")
         if(records == null)
             return false;
@@ -98,9 +99,9 @@ export class RepositoryImpl implements Repository {
     }
 
     private async executeQuery(query: string) {
-        var poolConnection = await sql.connect(this.conf);
+        const poolConnection = await sql.connect(this.conf);
         
-        var resultSet:sql.IResult<any> = await poolConnection.request()
+        const resultSet:sql.IResult<any> = await poolConnection.request()
                                         .query(query);
         poolConnection.close();
         
@@ -109,7 +110,7 @@ export class RepositoryImpl implements Repository {
 
     private async checkEntryForFirebase(email: string, callback: (url, obj) => void) {
         email = email.replace(".", "-")
-        var url = this.firebaseUrl + '/' + email + '.json';
+        const url = this.firebaseUrl + '/' + email + '.json';
         await axios.get(url)
         .then((response) => {
             if(response.data == null) {
@@ -137,7 +138,7 @@ export class RepositoryImpl implements Repository {
 
     private async deleteEntryForFirebase(email: string, id: string) {
         email = email.replace(".", "-")
-        var url = this.firebaseUrl + '/' + email + '/' + id + '.json';
+        const url = this.firebaseUrl + '/' + email + '/' + id + '.json';
         await axios.delete(url)
         .then((response) => {
             //console.log(response);

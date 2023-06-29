@@ -1,4 +1,3 @@
-import { RegisteredDeviceImpl } from "../valueObjects/RegisteredDevice";
 import { Repository } from '../repository/RepositoryInterface'
 import { EmailPolicyImpl } from '../policies/EmailPolicy';
 import {DevicePortInterface} from './DevicePort';
@@ -14,10 +13,9 @@ export class SendService {
     }
 
 
-
     private async updateSystem(hash: string, email: string, success: ()=>void, error: ()=>void, register: boolean) {
         
-        var device;
+        let device;
         if(register) {
             device = await this.repository.getDeviceConnectionStringNotRegistered(hash);
         } else {
@@ -25,20 +23,20 @@ export class SendService {
         }
         
         if(device != null && EmailPolicyImpl.checkEmail(email)) {
-            var isTimeoutOver = false;
-            var myTimeout = setTimeout(() => {
+            let isTimeoutOver = false;
+            let myTimeout = setTimeout(() => {
                 isTimeoutOver = true;
                 error();
             }, 180000);
             // il dispositivo esiste e non è registrato
-            var callback = async () => {
+            const callback = async () => {
                 if(isTimeoutOver) {
                     console.log("RETURN")
                     return;
                 }
                 clearTimeout(myTimeout);
                 myTimeout = null;
-                var result: boolean;
+                let result: boolean;
                 if(register) {
                     console.log("REGISTRO")
                     result = await this.repository.registerDevice(hash, email);
@@ -54,7 +52,7 @@ export class SendService {
                     error();
                 }
             }
-            var msg = "";
+            let msg = "";
             if(register) {
                 msg = this.getRegistrationMessage(email, hash);
             } else {
@@ -68,7 +66,7 @@ export class SendService {
     }
 
     public async register(hash: string, email: string, success: ()=>void, error: ()=>void) {
-        return await this.updateSystem(hash, email, success, error, true);;
+        return await this.updateSystem(hash, email, success, error, true);
     }
 
     public async unRegister(hash: string, email: string, success: ()=>void, error: ()=>void) {
@@ -77,10 +75,6 @@ export class SendService {
 
     public async addDevice(deviceId: string) {
         this.repository.addDevice(deviceId);
-    }
-
-    public sendUpdateNotification() {
-        
     }
 
     private getRegistrationMessage(email: string, hash: string) {

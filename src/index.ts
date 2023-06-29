@@ -1,6 +1,6 @@
 import router from './routes/ServiceRoutes';
-const express = require('express')
-const bodyParser = require('body-parser')
+import express = require('express')
+import bodyParser = require('body-parser')
 const app = express()
 
 
