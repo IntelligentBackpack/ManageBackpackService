@@ -29,9 +29,9 @@ router.get('/getAllDevices', async (req, res) => {
           description: 'A problem occurred while getting devices information' 
         }
     */
-    var endpoint = "IntelligentBackpackHub.azure-devices.net";
+    const endpoint = "IntelligentBackpackHub.azure-devices.net";
 
-    var token: string = generateSasToken(endpoint, ServiceLocator.localInfo["policyKey"], "iothubowner", 60);
+    const token: string = generateSasToken(endpoint, ServiceLocator.localInfo["policyKey"], "iothubowner", 60);
 
     await axios.get('https://IntelligentBackpackHub.azure-devices.net/devices?api-version=2020-05-31-preview',
         {
@@ -65,11 +65,11 @@ router.get('/getDeviceInfo/:nameDevice', async (req, res) => {
           description: 'A problem occurred while getting devices information' 
         }
     */
-    var endpoint = "IntelligentBackpackHub.azure-devices.net";
+    const endpoint = "IntelligentBackpackHub.azure-devices.net";
 
-    var token: string = generateSasToken(endpoint, ServiceLocator.localInfo["policyKey"], "iothubowner", 60);
+    const token: string = generateSasToken(endpoint, ServiceLocator.localInfo["policyKey"], "iothubowner", 60);
 
-    var deviceName = req.params.nameDevice;
+    const deviceName = req.params.nameDevice;
 
     await axios.get('https://IntelligentBackpackHub.azure-devices.net/twins/' + deviceName + '?api-version=2020-05-31-preview',
         {
@@ -104,10 +104,10 @@ router.put('/addDevice/:nameDevice', async (req, res) => {
         }
     */
 
-    var endpoint = "IntelligentBackpackHub.azure-devices.net";
+    const endpoint = "IntelligentBackpackHub.azure-devices.net";
 
-    var token: string = generateSasToken(endpoint, "kkEXnnmh9gfASfrgeav6MG3O8Wi85j+vngraAQvz904", "iothubowner", 60);
-    var deviceName = req.params.nameDevice;
+    const token: string = generateSasToken(endpoint, "kkEXnnmh9gfASfrgeav6MG3O8Wi85j+vngraAQvz904", "iothubowner", 60);
+    const deviceName = req.params.nameDevice;
     await axios.put('https://IntelligentBackpackHub.azure-devices.net/devices/' + deviceName + '?api-version=2020-05-31-preview',
         { "deviceId": deviceName },
         {
@@ -163,15 +163,15 @@ router.delete('/unregister/:hash', async (req, res) => {
         }
     */
     try {
-        var hash = req.params.hash;
-        let data = req.body;
-        var email = data["email"];
+        const hash = req.params.hash;
+        const data = req.body;
+        const email = data["email"];
         if (email == null || email == "" || !EmailPolicyImpl.checkEmail(email)) {
             res.status(502).send('Email malformed');
             return;
         }
 
-        var result = await ServiceLocator.service.unRegister(hash, email,
+        const result = await ServiceLocator.service.unRegister(hash, email,
             () => {
                 if (!res.headersSent) {
                     res.status(200).send('Device correctly unregistered');
@@ -231,15 +231,15 @@ router.post('/register/:hash', async (req, res) => {
         }
     */
     try {
-        var hash = req.params.hash;
-        let data = req.body;
-        var email = data["email"];
+        const hash = req.params.hash;
+        const data = req.body;
+        const email = data["email"];
         if (email == null || email == "" || !EmailPolicyImpl.checkEmail(email)) {
             res.status(502).send('Email malformed');
             return;
         }
 
-        var result = await ServiceLocator.service.register(hash, email,
+        const result = await ServiceLocator.service.register(hash, email,
             () => {
                 if (!res.headersSent) {
                     res.status(200).send('Device correctly registered');
