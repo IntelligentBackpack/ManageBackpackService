@@ -29,7 +29,14 @@ export class SendService {
                 error();
             }, 180000);
             // il dispositivo esiste e non è registrato
-            const callback = async () => {
+            // const callback = 
+            let msg = "";
+            if(register) {
+                msg = this.getRegistrationMessage(email, hash);
+            } else {
+                msg = this.getUnRegistrationMessage();
+            }
+            this.sendConsumer.sendMessageConsumer(device.getDeviceId(), msg, async () => {
                 if(isTimeoutOver) {
                     console.log("RETURN")
                     return;
@@ -51,14 +58,7 @@ export class SendService {
                 else {
                     error();
                 }
-            }
-            let msg = "";
-            if(register) {
-                msg = this.getRegistrationMessage(email, hash);
-            } else {
-                msg = this.getUnRegistrationMessage();
-            }
-            this.sendConsumer.sendMessageConsumer(device.getDeviceId(), msg, callback);
+            });
             return true;
         } else {
             return false;
