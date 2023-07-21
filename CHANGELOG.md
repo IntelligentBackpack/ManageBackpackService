@@ -1,3 +1,25 @@
+## [1.1.1](https://github.com/IntelligentBackpack/ManageBackpackService/compare/1.1.0...1.1.1) (2023-06-29)
+
+
+### Bug Fixes
+
+* fixed callback passing as argument ([05b9e3d](https://github.com/IntelligentBackpack/ManageBackpackService/commit/05b9e3d971d6a5a221faf8c342b038ad5825abac))
+
+
+### Build and continuous integration
+
+* added new ts linter for quality assurance ([255af93](https://github.com/IntelligentBackpack/ManageBackpackService/commit/255af93b25fe81290f45282bb04c80559fa4e30f))
+* updated with new git conventional commit plugin for npm ([7f4fa1a](https://github.com/IntelligentBackpack/ManageBackpackService/commit/7f4fa1a3471cc95fd7850cb6a53e40ba53a3977a))
+
+
+### General maintenance
+
+* added new SonarCloud configuration for quality analysis ([e714b0f](https://github.com/IntelligentBackpack/ManageBackpackService/commit/e714b0f0a3cf61d169d74bbadbb5648c3f279e22))
+* added src information into sonar config file ([edc9129](https://github.com/IntelligentBackpack/ManageBackpackService/commit/edc9129b67b35aa37a2e61a4eb30a2fec5dcea30))
+* code quality improved ([41dd14a](https://github.com/IntelligentBackpack/ManageBackpackService/commit/41dd14aaeb703c0a0689365159aa5e400c46e202))
+* improved code quality following TSLint hints ([739aa15](https://github.com/IntelligentBackpack/ManageBackpackService/commit/739aa1587646bb27d221ef5ea4a90875a2e53198))
+* updated readme with new badges from SonarCloud ([4e9a74a](https://github.com/IntelligentBackpack/ManageBackpackService/commit/4e9a74a57487040e46869d39e1b7de8ea417ce58))
+
 ## [1.1.0](https://github.com/IntelligentBackpack/ManageBackpackService/compare/1.0.1...1.1.0) (2023-06-18)
 
 
